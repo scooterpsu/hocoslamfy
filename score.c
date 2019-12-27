@@ -170,7 +170,11 @@ int MkDir(char *path)
 #ifndef DONT_USE_PWD
 	return mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO);
 #else
+#ifdef USE_HOME	
+	return mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO);
+#else	
 	return mkdir(path);
+#endif
 #endif
 }
 
@@ -185,7 +189,16 @@ void SaveHighScore(uint32_t Score)
 	
 	snprintf(path, 256, "%s/%s/%s", pw->pw_dir, SavePath, HighScoreFilePath);
 #else
+#ifdef USE_HOME
+	char *home = getenv("HOME");
+
+	snprintf(path, 256, "%s/%s", home, SavePath);
+	MkDir(path);	
+
+	snprintf(path, 256, "%s/%s/%s", home, SavePath, HighScoreFilePath);	
+#else	
 	snprintf(path, 256, "%s", HighScoreFilePath);
+#endif
 #endif
 	FILE *fp = fopen(path, "w");
 
@@ -222,7 +235,12 @@ uint32_t GetHighScore()
 	struct passwd *pw = getpwuid(getuid());
 	snprintf(path, 256, "%s/%s/%s", pw->pw_dir, SavePath, HighScoreFilePath);
 #else
+#ifdef USE_HOME
+	char *home = getenv("HOME");
+	snprintf(path, 256, "%s/%s/%s", home, SavePath, HighScoreFilePath);	
+#else	
 	snprintf(path, 256, "%s", HighScoreFilePath);
+#endif
 #endif
 
 	FILE *fp = fopen(path, "r");
