@@ -86,6 +86,17 @@ bool IsPauseEvent(const SDL_Event* event)
 	    && event->key.keysym.sym == SDLK_RETURN /* Start */;
 }
 
+bool IsScoreToggleEvent(const SDL_Event* event)
+{
+	return event->type == SDL_KEYDOWN
+	    && event->key.keysym.sym == SDLK_BACKSPACE;
+}
+
+const char* GetScoreTogglePrompt(void)
+{
+	return "R1";
+}
+
 const char* GetPausePrompt(void)
 {
 	return "Start";

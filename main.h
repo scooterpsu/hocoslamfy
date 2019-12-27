@@ -26,6 +26,8 @@
 #include "title.h"
 #include "bg.h"
 
+static bool FollowBee;
+
 typedef void (*TGatherInput) (bool* Continue);
 typedef void (*TDoLogic) (bool* Continue, bool* Error, Uint32 Milliseconds);
 typedef void (*TOutputFrame) (void);

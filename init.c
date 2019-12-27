@@ -176,6 +176,9 @@ void Initialize(bool* Continue, bool* Error)
 		return;
 
 	InitializePlatform();
+	
+	FollowBee = false;
+	
 	if (!InitializeAudio())
 	{
 		*Continue = false;  *Error = true;
