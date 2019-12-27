@@ -1,4 +1,4 @@
-TARGET      ?= hocoslamfy
+TARGET      ?= hocoslamfy-od
 
 ifeq ($(TARGET), hocoslamfy-od)
   CC        := mipsel-linux-gcc
@@ -25,7 +25,7 @@ INCLUDE     := -I.
 DEFS        +=
 
 CFLAGS       = $(SDL_CFLAGS) -Wall -Wno-unused-variable \
-               -O2 -fomit-frame-pointer $(DEFS) $(INCLUDE)
+               -O2 -fomit-frame-pointer $(DEFS) $(INCLUDE) -DUSE_16BPP -DDONT_USE_PWD -DUSE_HOME
 LDFLAGS     := $(SDL_LIBS) -lm -lSDL_image -lSDL_mixer
 
 ifneq (, $(findstring MINGW, $(shell uname -s)))
