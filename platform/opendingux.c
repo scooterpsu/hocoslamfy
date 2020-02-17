@@ -26,6 +26,18 @@
 
 void InitializePlatform(void)
 {
+	Uint32 i;
+    Uint32 joystick_count = SDL_NumJoysticks();
+    printf("%d joysticks\n", joystick_count);
+    
+    if(joystick_count > 0)
+    {
+        for(i=0;i<joystick_count;i++)
+        {
+            SDL_JoystickOpen(i);
+        }
+        SDL_JoystickEventState(SDL_ENABLE);
+    }
 }
 
 Uint32 ToNextFrame(void)
@@ -36,16 +48,22 @@ Uint32 ToNextFrame(void)
 
 bool IsEnterGamePressingEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYDOWN
+	return (event->type == SDL_KEYDOWN
 	    && (event->key.keysym.sym == SDLK_LCTRL  /* A */
-	     || event->key.keysym.sym == SDLK_RETURN /* Start */);
+	     || event->key.keysym.sym == SDLK_RETURN /* Start */))
+		 || (event->type == SDL_JOYBUTTONDOWN
+	    && (event->jbutton.button == 1  /* A */
+	     || event->jbutton.button == 9 /* Start */));
 }
 
 bool IsEnterGameReleasingEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYUP
+	return (event->type == SDL_KEYUP
 	    && (event->key.keysym.sym == SDLK_LCTRL  /* A */
-	     || event->key.keysym.sym == SDLK_RETURN /* Start */);
+	     || event->key.keysym.sym == SDLK_RETURN /* Start */))
+		 || (event->type == SDL_JOYBUTTONUP
+	    && (event->jbutton.button == 1  /* A */
+	     || event->jbutton.button == 9 /* Start */));		 
 }
 
 const char* GetEnterGamePrompt(void)
@@ -56,9 +74,12 @@ const char* GetEnterGamePrompt(void)
 bool IsExitGameEvent(const SDL_Event* event)
 {
 	return event->type == SDL_QUIT
-	    || (event->type == SDL_KEYDOWN
-	     && (event->key.keysym.sym == SDLK_LALT   /* B */
-	      || event->key.keysym.sym == SDLK_ESCAPE /* Select */));
+	     || (event->type == SDL_KEYDOWN
+	    && (event->key.keysym.sym == SDLK_LALT   /* B */
+	     || event->key.keysym.sym == SDLK_ESCAPE /* Select */))
+	     || (event->type == SDL_JOYBUTTONDOWN
+	    && (event->jbutton.button == 2  /* B */
+	     || event->jbutton.button == 8 /* Select */));	
 }
 
 const char* GetExitGamePrompt(void)
@@ -68,11 +89,16 @@ const char* GetExitGamePrompt(void)
 
 bool IsBoostEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYDOWN
+	return (event->type == SDL_KEYDOWN
 	    && (event->key.keysym.sym == SDLK_LCTRL  /* A */
 	     || event->key.keysym.sym == SDLK_LALT   /* B */
 	     || event->key.keysym.sym == SDLK_LSHIFT /* GCW Zero: X; Dingoo A320: Y */
-	     || event->key.keysym.sym == SDLK_SPACE  /* GCW Zero: Y; Dingoo A320: X */);
+	     || event->key.keysym.sym == SDLK_SPACE  /* GCW Zero: Y; Dingoo A320: X */))
+	     || (event->type == SDL_JOYBUTTONDOWN
+	    && (event->jbutton.button == 1  /* A */
+	     || event->jbutton.button == 2 /* B */
+	     || event->jbutton.button == 0 /* X */		 
+	     || event->jbutton.button == 3 /* Y */));
 }
 
 const char* GetBoostPrompt(void)
@@ -82,14 +108,18 @@ const char* GetBoostPrompt(void)
 
 bool IsPauseEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYDOWN
-	    && event->key.keysym.sym == SDLK_RETURN /* Start */;
+	return (event->type == SDL_KEYDOWN
+	    && event->key.keysym.sym == SDLK_RETURN /* Start */)
+	     || (event->type == SDL_JOYBUTTONDOWN
+	    && event->jbutton.button == 9 /* Start */);	
 }
 
 bool IsScoreToggleEvent(const SDL_Event* event)
 {
-	return event->type == SDL_KEYDOWN
-	    && event->key.keysym.sym == SDLK_BACKSPACE;
+	return (event->type == SDL_KEYDOWN
+	    && event->key.keysym.sym == SDLK_BACKSPACE) /* R */
+	     || (event->type == SDL_JOYBUTTONDOWN
+	    && event->jbutton.button == 5 /* R */);	
 }
 
 const char* GetScoreTogglePrompt(void)
